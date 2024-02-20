@@ -27,8 +27,10 @@ import { initializeThreadOperations } from "./threadOperations";
 import * as utility from "./utility";
 import { registerVariableMenuCommands } from "./variableMenu";
 import { promisify } from "util";
+import { CANCELLED } from "dns";
 
 export async function activate(context: vscode.ExtensionContext): Promise<any> {
+    console.log("activate yeah!");
     await initializeFromJsonFile(context.asAbsolutePath("./package.json"), {
         firstParty: true,
     });
@@ -77,7 +79,7 @@ function initializeExtension(_operationId: string, context: vscode.ExtensionCont
     initializeCodeLensProvider(context);
     initializeThreadOperations(context);
     subscribeToJavaExtensionEvents();
-
+    console.log("initialize yeah!");
     context.subscriptions.push(vscode.languages.registerInlineValuesProvider("java", new JavaInlineValuesProvider()));
     return {
         progressProvider,
@@ -125,6 +127,7 @@ function registerDebugEventListener(context: vscode.ExtensionContext) {
             return;
         }
         fetchUsageData().then((ret) => {
+    
             if (Array.isArray(ret) && ret.length) {
                 ret.forEach((entry) => {
                     const commonProperties: any = {};
@@ -146,6 +149,7 @@ function registerDebugEventListener(context: vscode.ExtensionContext) {
         });
     }));
 
+    let hasFetched = [false];
     context.subscriptions.push(vscode.debug.onDidReceiveDebugSessionCustomEvent((customEvent) => {
         const t = customEvent.session ? customEvent.session.type : undefined;
         if (t !== JAVA_LANGID) {
@@ -156,12 +160,47 @@ function registerDebugEventListener(context: vscode.ExtensionContext) {
                 operationName: customEvent.body?.name,
                 ...customEvent.body?.properties,
             });
+            if (!hasFetched[0]) {
+                fetchVariablesFromActiveSession(hasFetched);
+            }
         } else if (customEvent.event === HCR_EVENT) {
             handleHotCodeReplaceCustomEvent(customEvent);
         } else if (customEvent.event === USER_NOTIFICATION_EVENT) {
             handleUserNotification(customEvent);
         }
     }));
+}
+
+async function fetchVariablesFromActiveSession(hasFetched: boolean[]) {
+    const session = vscode.debug.activeDebugSession;
+    if (!session) {
+        console.log("No active debug session.");
+        return;
+    }
+
+    // Normally, you'd get the threadId and frameId dynamically, but for illustration:
+    const threadId = 1; // This is hypothetical; you need the actual thread ID.
+    let runned = false;
+    try {
+        // Fetch stack frames to get a valid frameId
+        const stackResponse = await session.customRequest('stackTrace', { threadId });
+        if (stackResponse && stackResponse.stackFrames.length > 0) {
+            const frameId = stackResponse.stackFrames[0].id; // Get the first frame's ID
+            
+            // Now fetch variables for this frame
+            const scopesResponse = await session.customRequest('scopes', { frameId });
+            if (scopesResponse && scopesResponse.scopes.length > 0) {
+                const variablesReference = scopesResponse.scopes[0].variablesReference;
+                
+                // Finally, get the variables using the variablesReference obtained from the scope
+                const variablesResponse = await session.customRequest('variables', { variablesReference });
+                console.log(variablesResponse.variables); // Log or process variables
+                hasFetched[0] = true;
+            }
+        }
+    } catch (error) {
+        console.error("Failed to fetch variables:", error);
+    }
 }
 
 function handleUserNotification(customEvent: vscode.DebugSessionCustomEvent) {
