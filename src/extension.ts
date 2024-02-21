@@ -148,20 +148,23 @@ function registerDebugEventListener(context: vscode.ExtensionContext) {
             }
         });
     }));
-
-    let hasFetched = [false];
-    context.subscriptions.push(vscode.debug.onDidReceiveDebugSessionCustomEvent((customEvent) => {
+    let isFetchingVariables = false;
+    context.subscriptions.push(vscode.debug.onDidReceiveDebugSessionCustomEvent(async (customEvent) => {
         const t = customEvent.session ? customEvent.session.type : undefined;
         if (t !== JAVA_LANGID) {
             return;
         }
+
         if (customEvent.event === TELEMETRY_EVENT) {
+            console.log("breakpoint", customEvent.session.getDebugProtocolBreakpoint)
             sendInfo("", {
                 operationName: customEvent.body?.name,
                 ...customEvent.body?.properties,
             });
-            if (!hasFetched[0]) {
-                fetchVariablesFromActiveSession(hasFetched);
+             if (!isFetchingVariables) {
+                isFetchingVariables = true;
+                await fetchVariablesFromActiveSession();
+                isFetchingVariables = false;
             }
         } else if (customEvent.event === HCR_EVENT) {
             handleHotCodeReplaceCustomEvent(customEvent);
@@ -171,7 +174,7 @@ function registerDebugEventListener(context: vscode.ExtensionContext) {
     }));
 }
 
-async function fetchVariablesFromActiveSession(hasFetched: boolean[]) {
+async function fetchVariablesFromActiveSession() {
     const session = vscode.debug.activeDebugSession;
     if (!session) {
         console.log("No active debug session.");
@@ -195,7 +198,6 @@ async function fetchVariablesFromActiveSession(hasFetched: boolean[]) {
                 // Finally, get the variables using the variablesReference obtained from the scope
                 const variablesResponse = await session.customRequest('variables', { variablesReference });
                 console.log(variablesResponse.variables); // Log or process variables
-                hasFetched[0] = true;
             }
         }
     } catch (error) {
