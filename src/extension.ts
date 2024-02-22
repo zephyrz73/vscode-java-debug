@@ -248,7 +248,7 @@ async function queryGPT(content: any) {
 
         }, {
             headers: {
-                'Authorization': `Bearer API_KEY`,
+                'Authorization': `Bearer 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`,
                 'Content-Type': 'application/json'
             }
         });
