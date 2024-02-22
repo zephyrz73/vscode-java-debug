@@ -28,6 +28,7 @@ import * as utility from "./utility";
 import { registerVariableMenuCommands } from "./variableMenu";
 import { promisify } from "util";
 import { CANCELLED } from "dns";
+import { error } from "console";
 
 export async function activate(context: vscode.ExtensionContext): Promise<any> {
     console.log("activate yeah!");
@@ -185,11 +186,11 @@ async function fetchVariablesFromActiveSession() {
     const threadId = 1; // This is hypothetical; you need the actual thread ID.
     let runned = false;
     try {
+
         // Fetch stack frames to get a valid frameId
         const stackResponse = await session.customRequest('stackTrace', { threadId });
         if (stackResponse && stackResponse.stackFrames.length > 0) {
             const frameId = stackResponse.stackFrames[0].id; // Get the first frame's ID
-            
             // Now fetch variables for this frame
             const scopesResponse = await session.customRequest('scopes', { frameId });
             if (scopesResponse && scopesResponse.scopes.length > 0) {
@@ -199,9 +200,62 @@ async function fetchVariablesFromActiveSession() {
                 const variablesResponse = await session.customRequest('variables', { variablesReference });
                 console.log(variablesResponse.variables); // Log or process variables
             }
+
+
+            // Fetch checkpoint location and code file path, then call the gpt server.
+            const breakpointPath = stackResponse.stackFrames[0].source.path;
+            const breakpointLine = stackResponse.stackFrames[0].line;
+            const breakpointColumn = stackResponse.stackFrames[0].column;
+            
+            const breakpointfileUri = vscode.Uri.file(breakpointPath);
+            const breakpointPosition = new vscode.Position(breakpointLine, breakpointColumn);
+
+            vscode.workspace.openTextDocument(breakpointfileUri).then(
+                document => {
+                    const fileContent = document.getText();
+                    // console.log(fileContent);
+                    const content = [
+                        {
+                            "role": "system",
+                            "content": "please analyse the following code and tell me what is it doing."
+                        },
+                        {
+                            "role": "user",
+                            "content": fileContent
+                        }
+                    ];
+                    queryGPT(content).then(response => {
+                        console.log("GPT response:", response.choices[0].message.content);
+                    }).catch(error => {
+                        console.log("Failed to get GPT response.", error);
+                    })
+                }
+            )
+            
         }
     } catch (error) {
         console.error("Failed to fetch variables:", error);
+    }
+}
+
+// call GPT server
+async function queryGPT(content: any) {
+    const axios = require('axios');
+    try {
+        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+            messages: content,
+            model: "gpt-3.5-turbo",
+
+        }, {
+            headers: {
+                'Authorization': `Bearer API_KEY`,
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error querying ChatGPT:", error);
+        throw error; 
     }
 }
 
