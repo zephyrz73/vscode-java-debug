@@ -1,0 +1,821 @@
+[
+    {
+        "Type": "regular",
+        "LineNumber": 16,
+        "variable": [
+            {
+                "name": "args",
+                "value": "String[0]@8",
+                "type": "String[]",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "args"
+            },
+            {
+                "name": "j",
+                "value": "10",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "j"
+            }
+        ],
+        "LineContent": "        f(j); //j = 10",
+        "StackTrace": [
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "regular",
+        "LineNumber": 11,
+        "variable": [
+            {
+                "name": "i",
+                "value": "10",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "i"
+            },
+            {
+                "name": "lpr",
+                "value": "0",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "lpr"
+            }
+        ],
+        "LineContent": "            g(lpr);",
+        "StackTrace": [
+            {
+                "name": "Main.f(int)",
+                "line": 11,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {\n            g(lpr);",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "regular",
+        "LineNumber": 4,
+        "variable": [
+            {
+                "name": "j",
+                "value": "0",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "j"
+            }
+        ],
+        "LineContent": "        j = j + 2;",
+        "StackTrace": [
+            {
+                "name": "Main.g(int)",
+                "line": 4,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.f(int)",
+                "line": 11,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "\n    public static void g(int j) {\n        j = j + 2;",
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {\n            g(lpr);",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "regular",
+        "LineNumber": 5,
+        "variable": [
+            {
+                "name": "j",
+                "value": "2",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "j"
+            }
+        ],
+        "LineContent": "        System.out.println(j);",
+        "StackTrace": [
+            {
+                "name": "Main.g(int)",
+                "line": 5,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.f(int)",
+                "line": 11,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "\n    public static void g(int j) {\n        j = j + 2;\n        System.out.println(j);",
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {\n            g(lpr);",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "regular",
+        "LineNumber": 6,
+        "variable": [
+            {
+                "name": "j",
+                "value": "2",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "j"
+            }
+        ],
+        "LineContent": "    }",
+        "StackTrace": [
+            {
+                "name": "Main.g(int)",
+                "line": 6,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.f(int)",
+                "line": 11,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "\n    public static void g(int j) {\n        j = j + 2;\n        System.out.println(j);\n    }",
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {\n            g(lpr);",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "bp",
+        "LineNumber": 10,
+        "variable": [
+            {
+                "name": "i",
+                "value": "10",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "i"
+            },
+            {
+                "name": "lpr",
+                "value": "0",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "lpr"
+            }
+        ],
+        "LineContent": "        for (lpr = 0; lpr < i; lpr++) {",
+        "StackTrace": [
+            {
+                "name": "Main.f(int)",
+                "line": 10,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "regular",
+        "LineNumber": 11,
+        "variable": [
+            {
+                "name": "i",
+                "value": "10",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "i"
+            },
+            {
+                "name": "lpr",
+                "value": "1",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "lpr"
+            }
+        ],
+        "LineContent": "            g(lpr);",
+        "StackTrace": [
+            {
+                "name": "Main.f(int)",
+                "line": 11,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {\n            g(lpr);",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "regular",
+        "LineNumber": 4,
+        "variable": [
+            {
+                "name": "j",
+                "value": "1",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "j"
+            }
+        ],
+        "LineContent": "        j = j + 2;",
+        "StackTrace": [
+            {
+                "name": "Main.g(int)",
+                "line": 4,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.f(int)",
+                "line": 11,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "\n    public static void g(int j) {\n        j = j + 2;",
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {\n            g(lpr);",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "regular",
+        "LineNumber": 5,
+        "variable": [
+            {
+                "name": "j",
+                "value": "3",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "j"
+            }
+        ],
+        "LineContent": "        System.out.println(j);",
+        "StackTrace": [
+            {
+                "name": "Main.g(int)",
+                "line": 5,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.f(int)",
+                "line": 11,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "\n    public static void g(int j) {\n        j = j + 2;\n        System.out.println(j);",
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {\n            g(lpr);",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "regular",
+        "LineNumber": 6,
+        "variable": [
+            {
+                "name": "j",
+                "value": "3",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "j"
+            }
+        ],
+        "LineContent": "    }",
+        "StackTrace": [
+            {
+                "name": "Main.g(int)",
+                "line": 6,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.f(int)",
+                "line": 11,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "\n    public static void g(int j) {\n        j = j + 2;\n        System.out.println(j);\n    }",
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {\n            g(lpr);",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "bp",
+        "LineNumber": 10,
+        "variable": [
+            {
+                "name": "i",
+                "value": "10",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "i"
+            },
+            {
+                "name": "lpr",
+                "value": "1",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "lpr"
+            }
+        ],
+        "LineContent": "        for (lpr = 0; lpr < i; lpr++) {",
+        "StackTrace": [
+            {
+                "name": "Main.f(int)",
+                "line": 10,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "regular",
+        "LineNumber": 11,
+        "variable": [
+            {
+                "name": "i",
+                "value": "10",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "i"
+            },
+            {
+                "name": "lpr",
+                "value": "2",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "lpr"
+            }
+        ],
+        "LineContent": "            g(lpr);",
+        "StackTrace": [
+            {
+                "name": "Main.f(int)",
+                "line": 11,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {\n            g(lpr);",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "regular",
+        "LineNumber": 4,
+        "variable": [
+            {
+                "name": "j",
+                "value": "2",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "j"
+            }
+        ],
+        "LineContent": "        j = j + 2;",
+        "StackTrace": [
+            {
+                "name": "Main.g(int)",
+                "line": 4,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.f(int)",
+                "line": 11,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "\n    public static void g(int j) {\n        j = j + 2;",
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {\n            g(lpr);",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "regular",
+        "LineNumber": 5,
+        "variable": [
+            {
+                "name": "j",
+                "value": "4",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "j"
+            }
+        ],
+        "LineContent": "        System.out.println(j);",
+        "StackTrace": [
+            {
+                "name": "Main.g(int)",
+                "line": 5,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.f(int)",
+                "line": 11,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "\n    public static void g(int j) {\n        j = j + 2;\n        System.out.println(j);",
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {\n            g(lpr);",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "regular",
+        "LineNumber": 6,
+        "variable": [
+            {
+                "name": "j",
+                "value": "4",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "j"
+            }
+        ],
+        "LineContent": "    }",
+        "StackTrace": [
+            {
+                "name": "Main.g(int)",
+                "line": 6,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.f(int)",
+                "line": 11,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "\n    public static void g(int j) {\n        j = j + 2;\n        System.out.println(j);\n    }",
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {\n            g(lpr);",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "bp",
+        "LineNumber": 10,
+        "variable": [
+            {
+                "name": "i",
+                "value": "10",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "i"
+            },
+            {
+                "name": "lpr",
+                "value": "2",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "lpr"
+            }
+        ],
+        "LineContent": "        for (lpr = 0; lpr < i; lpr++) {",
+        "StackTrace": [
+            {
+                "name": "Main.f(int)",
+                "line": 10,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "regular",
+        "LineNumber": 11,
+        "variable": [
+            {
+                "name": "i",
+                "value": "10",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "i"
+            },
+            {
+                "name": "lpr",
+                "value": "3",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "lpr"
+            }
+        ],
+        "LineContent": "            g(lpr);",
+        "StackTrace": [
+            {
+                "name": "Main.f(int)",
+                "line": 11,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {\n            g(lpr);",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "regular",
+        "LineNumber": 4,
+        "variable": [
+            {
+                "name": "j",
+                "value": "3",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "j"
+            }
+        ],
+        "LineContent": "        j = j + 2;",
+        "StackTrace": [
+            {
+                "name": "Main.g(int)",
+                "line": 4,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.f(int)",
+                "line": 11,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "\n    public static void g(int j) {\n        j = j + 2;",
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {\n            g(lpr);",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "regular",
+        "LineNumber": 5,
+        "variable": [
+            {
+                "name": "j",
+                "value": "5",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "j"
+            }
+        ],
+        "LineContent": "        System.out.println(j);",
+        "StackTrace": [
+            {
+                "name": "Main.g(int)",
+                "line": 5,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.f(int)",
+                "line": 11,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "\n    public static void g(int j) {\n        j = j + 2;\n        System.out.println(j);",
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {\n            g(lpr);",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "regular",
+        "LineNumber": 6,
+        "variable": [
+            {
+                "name": "j",
+                "value": "5",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "j"
+            }
+        ],
+        "LineContent": "    }",
+        "StackTrace": [
+            {
+                "name": "Main.g(int)",
+                "line": 6,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.f(int)",
+                "line": 11,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "\n    public static void g(int j) {\n        j = j + 2;\n        System.out.println(j);\n    }",
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {\n            g(lpr);",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    },
+    {
+        "Type": "bp",
+        "LineNumber": 10,
+        "variable": [
+            {
+                "name": "i",
+                "value": "10",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "i"
+            },
+            {
+                "name": "lpr",
+                "value": "3",
+                "type": "int",
+                "variablesReference": 0,
+                "namedVariables": 0,
+                "indexedVariables": 0,
+                "evaluateName": "lpr"
+            }
+        ],
+        "LineContent": "        for (lpr = 0; lpr < i; lpr++) {",
+        "StackTrace": [
+            {
+                "name": "Main.f(int)",
+                "line": 10,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            },
+            {
+                "name": "Main.main(String[])",
+                "line": 16,
+                "file": "/Users/xuanhezhou/272/java tester/Main.java"
+            }
+        ],
+        "CodeBlocks": [
+            "    \n    public static void f(int i) {\n        int lpr;\n        for (lpr = 0; lpr < i; lpr++) {",
+            "    }\n    public static void main(String[] args) {\n        int j = 10;\n        f(j); //j = 10"
+        ]
+    }
+]

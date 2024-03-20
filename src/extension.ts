@@ -29,6 +29,7 @@ import { registerVariableMenuCommands } from "./variableMenu";
 import { promisify } from "util";
 import { CANCELLED } from "dns";
 import * as fs from 'fs';
+import { writeFileSync } from 'fs';
 
 export async function activate(context: vscode.ExtensionContext): Promise<any> {
     console.log("activate yeah!");
@@ -135,7 +136,14 @@ function registerDebugEventListener(context: vscode.ExtensionContext) {
     }
 
     context.subscriptions.push(vscode.debug.onDidTerminateDebugSession((e) => {
-        console.log("finish", log);
+        const jsonContent = JSON.stringify(log, null, 4); // Using 4 spaces for indentation
+
+        // Save to a JSON file
+        const filePath = 'log.json'; // Path where you want to save the JSON file
+        writeFileSync('/Users/xuanhezhou/272/vscode-debugger/javaDebugger/vscode-java-debug/debugLogs/'+filePath, jsonContent, 'utf8'); // Write the file synchronously
+
+        console.log(`File saved to ${filePath}`);
+
         if (e.type !== "java") {
             return;
         }
