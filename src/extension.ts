@@ -162,8 +162,21 @@ function registerDebugEventListener(context: vscode.ExtensionContext) {
 
     let breakpointsLineNumber: number[] = [];
     context.subscriptions.push(vscode.debug.onDidReceiveDebugSessionCustomEvent(async (customEvent) => {
-                // get breakpoint number
-        
+        // get stack trace
+        const session = customEvent.session;
+        if (!session || isFetchingStackFrames) return;
+
+        // if (session.type === JAVA_LANGID && customEvent.event === 'stopped' && customEvent.body.reason === 'breakpoint') {
+        //     // The reason 'breakpoint' may need to be adjusted based on actual event details
+        //     isFetchingStackFrames = true;
+        //     const stackFrames = await fetchStackFramesFromActiveSession(session);
+        //     isFetchingStackFrames = false;
+
+        //     console.log('Stack Frames:', stackFrames);
+        //     // Further processing and organization of stack frames as needed
+        // }
+
+        // get breakpoint number
         if (breakpointsLineNumber.length == 0) {
             const breakpoints = vscode.debug.breakpoints.filter(bp => bp instanceof vscode.SourceBreakpoint);
             breakpointsLineNumber = breakpoints.map((breakpoint) => {
@@ -186,13 +199,22 @@ function registerDebugEventListener(context: vscode.ExtensionContext) {
                 operationName: customEvent.body?.name,
                 ...customEvent.body?.properties,
             });
+            // variable response
             let variableResponse;
+            let stackFrames;
             if (!isFetchingVariables) {
                 isFetchingVariables = true;
                 variableResponse = await fetchVariablesFromActiveSession();
+                // stack frames
+                stackFrames = await fetchStackFramesFromActiveSession(session);
+
                 isFetchingVariables = false;
             }
             console.log("variableResponse", variableResponse);
+            console.log('Stack Frames:', stackFrames);
+
+
+
             // get current line number
             const activeEditor = vscode.window.activeTextEditor;
             if (!activeEditor) return;
@@ -230,6 +252,33 @@ function registerDebugEventListener(context: vscode.ExtensionContext) {
 }
 
 // getAllExecutedLinesBetweenCurrentLineAndPreviousBreakpoint
+interface StackFrameInfo {
+    name: string;
+    line: number;
+    file: string;
+}
+
+let isFetchingStackFrames = false; // Flag to prevent overlapping fetch operations
+
+async function fetchStackFramesFromActiveSession(session: vscode.DebugSession): Promise<StackFrameInfo[]> {
+    if (!session) {
+        console.log('No active debug session.');
+        return [];
+    }
+
+    // Request the stack trace from the current debug session
+    try {
+        const stackTraceResponse = await session.customRequest('stackTrace', { threadId: 1 }); // Adjust threadId as necessary
+        return stackTraceResponse.stackFrames.map((frame: any): StackFrameInfo => ({
+            name: frame.name,
+            line: frame.line,
+            file: frame.source.path,
+        }));
+    } catch (error) {
+        console.error('Error fetching stack frames:', error);
+        return [];
+    }
+}
 
 
 // get precondition before current active line
