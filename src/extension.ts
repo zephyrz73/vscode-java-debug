@@ -31,6 +31,7 @@ import { CANCELLED } from "dns";
 
 export async function activate(context: vscode.ExtensionContext): Promise<any> {
     console.log("activate yeah!");
+
     await initializeFromJsonFile(context.asAbsolutePath("./package.json"), {
         firstParty: true,
     });
@@ -149,23 +150,77 @@ function registerDebugEventListener(context: vscode.ExtensionContext) {
         });
     }));
     let isFetchingVariables = false;
+    let previousBreakpointNumber = -1;
+    
+    let log: LogLine[] = [];
+    interface LogLine {
+        Type: string; // bp or regular
+        LineNumber: number;
+        variable: any;
+        LineContent: string;
+    }
+
+    let breakpointsLineNumber: number[] = [];
     context.subscriptions.push(vscode.debug.onDidReceiveDebugSessionCustomEvent(async (customEvent) => {
+                // get breakpoint number
+        
+        if (breakpointsLineNumber.length == 0) {
+            const breakpoints = vscode.debug.breakpoints.filter(bp => bp instanceof vscode.SourceBreakpoint);
+            breakpointsLineNumber = breakpoints.map((breakpoint) => {
+                if (breakpoint instanceof vscode.SourceBreakpoint) {
+                    return breakpoint.location.range.start.line;
+                } else {
+                    return -1;
+                }
+            });
+        }
+        console.log("breakpointslinenumber", breakpointsLineNumber);
+
         const t = customEvent.session ? customEvent.session.type : undefined;
         if (t !== JAVA_LANGID) {
             return;
         }
 
         if (customEvent.event === TELEMETRY_EVENT) {
-            console.log("breakpoint", customEvent.session.getDebugProtocolBreakpoint)
             sendInfo("", {
                 operationName: customEvent.body?.name,
                 ...customEvent.body?.properties,
             });
-             if (!isFetchingVariables) {
+            let variableResponse;
+            if (!isFetchingVariables) {
                 isFetchingVariables = true;
-                await fetchVariablesFromActiveSession();
+                variableResponse = await fetchVariablesFromActiveSession();
                 isFetchingVariables = false;
             }
+            console.log("variableResponse", variableResponse);
+            // get current line number
+            const activeEditor = vscode.window.activeTextEditor;
+            if (!activeEditor) return;
+            const currentPosition = activeEditor.selection.active;
+            const currentLine = currentPosition.line + 1;
+            console.log("current line is", currentLine);
+            const currentLineContent = activeEditor.document.lineAt(currentLine - 1).text;
+            console.log("current content is", currentLineContent);    
+            let logLine: LogLine = {
+                Type: "",
+                LineNumber: 0,
+                variable: null, // Initialize with appropriate default value
+                LineContent: "" // Initialize with appropriate default value
+            };
+                
+            if (breakpointsLineNumber.includes(currentLine)) {
+                logLine.Type = "bp";
+            } else {
+                logLine.Type = "regular";
+            }
+            logLine.LineNumber = currentLine;
+            logLine.variable = variableResponse;
+            logLine.LineContent = currentLineContent;
+            if (logLine.variable !== undefined) {
+                log.push(logLine);
+                console.log("log", log);
+            }
+            
         } else if (customEvent.event === HCR_EVENT) {
             handleHotCodeReplaceCustomEvent(customEvent);
         } else if (customEvent.event === USER_NOTIFICATION_EVENT) {
@@ -174,6 +229,10 @@ function registerDebugEventListener(context: vscode.ExtensionContext) {
     }));
 }
 
+// getAllExecutedLinesBetweenCurrentLineAndPreviousBreakpoint
+
+
+// get precondition before current active line
 async function fetchVariablesFromActiveSession() {
     const session = vscode.debug.activeDebugSession;
     if (!session) {
@@ -197,7 +256,7 @@ async function fetchVariablesFromActiveSession() {
                 
                 // Finally, get the variables using the variablesReference obtained from the scope
                 const variablesResponse = await session.customRequest('variables', { variablesReference });
-                console.log(variablesResponse.variables); // Log or process variables
+                return variablesResponse.variables; // Log or process variables
             }
         }
     } catch (error) {
