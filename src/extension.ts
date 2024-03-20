@@ -28,6 +28,7 @@ import * as utility from "./utility";
 import { registerVariableMenuCommands } from "./variableMenu";
 import { promisify } from "util";
 import { CANCELLED } from "dns";
+import * as fs from 'fs';
 
 export async function activate(context: vscode.ExtensionContext): Promise<any> {
     console.log("activate yeah!");
@@ -123,7 +124,18 @@ async function subscribeToJavaExtensionEvents(): Promise<void> {
 
 function registerDebugEventListener(context: vscode.ExtensionContext) {
     const measureKeys = ["duration"];
+    let log: LogLine[] = [];
+    interface LogLine {
+        Type: string; // bp or regular
+        LineNumber: number;
+        variable: any;
+        LineContent: string;
+        StackTrace: any;
+        CodeBlocks: any;
+    }
+
     context.subscriptions.push(vscode.debug.onDidTerminateDebugSession((e) => {
+        console.log("finish", log);
         if (e.type !== "java") {
             return;
         }
@@ -152,13 +164,7 @@ function registerDebugEventListener(context: vscode.ExtensionContext) {
     let isFetchingVariables = false;
     let previousBreakpointNumber = -1;
     
-    let log: LogLine[] = [];
-    interface LogLine {
-        Type: string; // bp or regular
-        LineNumber: number;
-        variable: any;
-        LineContent: string;
-    }
+
 
     let breakpointsLineNumber: number[] = [];
     context.subscriptions.push(vscode.debug.onDidReceiveDebugSessionCustomEvent(async (customEvent) => {
@@ -202,18 +208,28 @@ function registerDebugEventListener(context: vscode.ExtensionContext) {
             // variable response
             let variableResponse;
             let stackFrames;
+            let codeBlocks = [];
             if (!isFetchingVariables) {
                 isFetchingVariables = true;
                 variableResponse = await fetchVariablesFromActiveSession();
                 // stack frames
                 stackFrames = await fetchStackFramesFromActiveSession(session);
+                // get current line to nearest breakpoints
+                if (stackFrames) {
+                    for (const frame of stackFrames) {
+                        let functionStartLine = await getFunctionStartLine(frame.file, frame.name);
+                        if (functionStartLine) {
+                            let codeBlock = getCodeBlockFromFile(frame.file, functionStartLine, frame.line);
+                            codeBlocks.push(codeBlock);
+                        }
+                    }   
+                }
+                console.log("codeblocks", codeBlocks);
 
                 isFetchingVariables = false;
             }
             console.log("variableResponse", variableResponse);
             console.log('Stack Frames:', stackFrames);
-
-
 
             // get current line number
             const activeEditor = vscode.window.activeTextEditor;
@@ -227,9 +243,13 @@ function registerDebugEventListener(context: vscode.ExtensionContext) {
                 Type: "",
                 LineNumber: 0,
                 variable: null, // Initialize with appropriate default value
-                LineContent: "" // Initialize with appropriate default value
+                LineContent: "", // Initialize with appropriate default value
+                StackTrace: null,
+                CodeBlocks: null,
             };
-                
+            
+
+            // save to log history
             if (breakpointsLineNumber.includes(currentLine)) {
                 logLine.Type = "bp";
             } else {
@@ -238,6 +258,8 @@ function registerDebugEventListener(context: vscode.ExtensionContext) {
             logLine.LineNumber = currentLine;
             logLine.variable = variableResponse;
             logLine.LineContent = currentLineContent;
+            logLine.StackTrace = stackFrames;
+            logLine.CodeBlocks = codeBlocks;
             if (logLine.variable !== undefined) {
                 log.push(logLine);
                 console.log("log", log);
@@ -251,7 +273,62 @@ function registerDebugEventListener(context: vscode.ExtensionContext) {
     }));
 }
 
-// getAllExecutedLinesBetweenCurrentLineAndPreviousBreakpoint
+// get lines from file
+function getCodeBlockFromFile(filePath: string, startLine: number, endLine: number): string {
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const lines = fileContent.split(/\r?\n/);
+    // Adjust line numbers from 1-based to 0-based indexing
+    return lines.slice(startLine - 1, endLine).join('\n');
+}
+
+async function getFunctionStartLine(filePath: string, functionSignature: string): Promise<number | null> {
+    const document = await vscode.workspace.openTextDocument(filePath);
+    const symbols: vscode.DocumentSymbol[] = await vscode.commands.executeCommand(
+        'vscode.executeDocumentSymbolProvider',
+        document.uri
+    );
+
+    if (!symbols) {
+        return null; // No symbols found in the document
+    }
+
+    // Flatten all symbols (including nested symbols)
+    const allSymbols = flattenSymbols(symbols);
+
+    // Parse the class and method from the function signature
+    const [className, methodSignature] = functionSignature.split('.');
+    const methodName = methodSignature.split('(')[0];
+    
+    // Find the class symbol
+    const classSymbol = allSymbols.find(symbol =>
+        symbol.kind === vscode.SymbolKind.Class && symbol.name === className
+    );
+
+    if (!classSymbol) {
+        return null; // No matching class found
+    }
+
+    // Find the method symbol within the class
+    const methodSymbol = classSymbol.children.find(symbol =>
+        symbol.kind === vscode.SymbolKind.Method && symbol.name.startsWith(methodName)
+    );
+
+    return methodSymbol ? methodSymbol.range.start.line : null; // zero-based line number
+}
+
+function flattenSymbols(symbols: vscode.DocumentSymbol[], allSymbols: vscode.DocumentSymbol[] = []): vscode.DocumentSymbol[] {
+    symbols.forEach(symbol => {
+        allSymbols.push(symbol);
+        if (symbol.children && symbol.children.length > 0) {
+            flattenSymbols(symbol.children, allSymbols);
+        }
+    });
+    return allSymbols;
+}
+
+
+
+// get the stackframe
 interface StackFrameInfo {
     name: string;
     line: number;
