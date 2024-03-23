@@ -6,7 +6,7 @@ from datetime import datetime
 import requests
 from requests.adapters import HTTPAdapter
 
-API_KEY = ""
+API_KEY = "your api_key"
 LOG = []
 
 def load_json_file(file):
@@ -14,7 +14,7 @@ def load_json_file(file):
         data = json.load(f)
         return data
 
-def generate_prompt(code, variable, option="file", model="GPT"):
+def generate_prompt(code, log, error, user, mode="code only", model="GPT"):
     '''
     [
       {
@@ -35,30 +35,63 @@ def generate_prompt(code, variable, option="file", model="GPT"):
     ]
 
     '''
-
-    if option == "file":
+    if mode == "code only":
         prompt = [
             {"role": "system",
-             "content": "You will be presented with a piece of code. Please analyze the code and give the answer about weather it is true."},
+             "content": "You will be presented with a piece of code. Please analyze the code and give the answer according to the user question."},
             {"role": "user",
-             "content": f"Code: {code}"
-                        f"\n\nIs it correct?"}
+             "content": f"Code: {code}\n\n"
+                        f"The error is: \n{error}\n\n"
+                        f"{user}"
+             }
+        ]
+    elif mode == "code with simple log":
+        info_str = ""
+        info_str += f"Debugging log:\n" \
+                    f"line_number\tline_content\t(variable_name1=value1, variable_name2=value2...)\n"
+        for l in log:
+            one_line_val = []
+            for i in l["variable"]:
+                one_line_val.append(f"{i['name']}={i['value']}")
+            info_str += f"{l['LineNumber']}\t{l['LineContent']}\t({', '.join(one_line_val)})\n"
+        prompt = [
+            {"role": "system",
+             "content": "You will be presented with a piece of code and some variables during the runtime. Please analyze the code and variables and give the answer about the question."},
+            {"role": "user",
+             "content": f"Code: {code}\n\n"
+                        f"{info_str}\n\n"
+                        f"Error: {error}\n\n"
+                        f"{user}"
+             }
         ]
     else:
         info_str = ""
-        for v in variable:
-            info_str += f"Breakpoint: {v['content']}\n\n"
-            info_str += f"Variables:\n" \
-                        f"name\tstart\tend\n"
-            for i in v["variables"]:
-                info_str += f"{i['name']}\t{i['name']}={i['start_value']}\t{i['name']}={i['end_value']}\n"
+        info_str += f"This is the format of each debugging log item:\n" \
+                    f"line_number\tline_content\t(variable_name1=value1, variable_name2=value2...)\n" \
+                    f"stacktrace (optional, current stacktrace): line_number\tline_content\n" \
+                    f"code_blocks: (optional, all the code that has been run so far) \n\n"
+        for l in log:
+            one_line_val = []
+            for i in l["variable"]:
+                one_line_val.append(f"{i['name']}={i['value']}")
+            info_str += f"{l['LineNumber']}\t{l['LineContent']}\t({', '.join(one_line_val)})\n"
+            if l.get("StackTrace") is not None:
+                one_line_stack = []
+                for s in l["StackTrace"]:
+                    one_line_stack.append(f"{s['line']}\t{s['name']}")
+                info_str += "stack_track:\n" + '\n'.join(one_line_stack)
+                info_str += '\ncode_blocks:\n' + '\n\n'.join(l.get("CodeBlocks"))
+            info_str += "\n-------\n"
+
         prompt = [
             {"role": "system",
-             "content": "You will be presented with a piece of code and some variables during the runtime. Please analyze the code and variables and give the answer about weather it is true."},
+             "content": "You will be presented with a piece of code and some variables during the runtime. Please analyze the code and variables and give the answer about the question."},
             {"role": "user",
-             "content": f"Code: {code},"
-                        f"\n\n{info_str}"
-                        f"\n\nIs the code correct?"}
+             "content": f"Code: {code}\n\n"
+                        f"{info_str}\n\n"
+                        f"Error: {error}\n\n"
+                        f"{user}"
+             }
         ]
     print(json.dumps(prompt, indent=2))
     return prompt
@@ -84,7 +117,15 @@ def _call_server(url, headers, prompt, timeout=15, retry=3):
     raise Exception
 
 
-def analysis(code, bp_log, model="GPT"):
+def analysis(code, log, error, user, mode, model="GPT"):
+    log = json.loads(log)
+    bp_log = {}
+    for i in log:
+        if i.get("Type") == "bp":
+            tmp = bp_log.setdefault(i.get("LineNumber"), [])
+            tmp.append(i)
+            bp_log[i.get("LineNumber")] = tmp
+
     variable = []
     for line_number, info in bp_log.items():
         variable.append({
@@ -97,7 +138,7 @@ def analysis(code, bp_log, model="GPT"):
             ]
         })
     # print(json.dumps(variable, indent=2))
-    prompt = generate_prompt(code, variable, option="block")
+    prompt = generate_prompt(code, log, error, user, mode=mode)
     url = "https://api.openai.com/v1/chat/completions"
     headers = {
         "Content-Type": "application/json",
@@ -105,8 +146,7 @@ def analysis(code, bp_log, model="GPT"):
     }
     reply = _call_server(url, headers, prompt)
     print(reply)
-    LOG.append([code, reply])
-    return reply
+    return reply.get("content"), prompt[1]["content"]
 
 def save():
     # Format the current date and time as a string in the specified format (YYMMDD-HHMMSS)

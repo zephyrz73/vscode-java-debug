@@ -38,13 +38,7 @@ def debug():
     data = parseRequestBody(request)
     code = data.get("code")
     log = data.get("log")
-    bps = {}
-    for i in log:
-        if i.get("Type") == "bp":
-            tmp = bps.setdefault(i.get("LineNumber"), [])
-            tmp.append(i)
-            bps[i.get("LineNumber")] = tmp
-    analysis(code, bps)
+    analysis(code, log)
     return ok(200)
 
 @get("/api/getResult")
